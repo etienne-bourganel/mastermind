@@ -10,6 +10,11 @@
 /test/version_tmp/
 /tmp/
 
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+
 # Used by dotenv library to load environment variables.
 # .env
 
