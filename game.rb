@@ -25,6 +25,7 @@ class Game
   def flow
     Display.start_game_welcome_human(@human.name)
     print @secret_code
+    Display.choices
     while continue?
       human_input
       round_counter
@@ -39,8 +40,36 @@ class Game
   # Human input logic
   def human_input
     Display.show_round(@round)
-    input = gets.chomp
-    print input
+    input = [nil, nil, nil, nil]
+    (0..3).each do |i|
+      input[i] = gets.chomp.to_i
+      puts colorize_input(input[i])
+    end
+  end
+
+  def colorize_input(input)
+    case input
+    when nil
+      ' - '
+    when 1
+      ' 1 '.colorize(:light_black)
+    when 2
+      ' 2 '.colorize(:magenta)
+    when 3
+      ' 3 '.colorize(:light_cyan)
+    when 4
+      ' 4 '.colorize(:green)
+    when 5
+      ' 5 '.colorize(:yellow)
+    when 6
+      ' 6 '.colorize(:red)
+    end
+  end
+
+  def show_input(input)
+    colorized_input = ''
+    colorized_input << input
+    colorized_input
   end
 
   # Condition to keep the codebreaker to continue guessing
