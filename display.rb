@@ -16,6 +16,10 @@ class Display
     puts "\n#{name}, try to guess the secret code"
   end
 
+  def self.instructions
+    puts "\nEnter your guess as a combination of 4 digits separated by a space."
+  end
+
   def self.choices
     puts  "\nChoices:" + ' 1 '.colorize(:light_black) +
           ' 2 '.colorize(:magenta) +
@@ -24,4 +28,5 @@ class Display
           ' 5 '.colorize(:yellow) +
           ' 6 '.colorize(:red)
   end
+
 end
