@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# This is the class for all players, whether a human or a machine
+# This is the class for all players
 class Player
   attr_reader :score, :role
 
