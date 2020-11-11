@@ -20,13 +20,47 @@ class Display
     puts "\nEnter your guess as a combination of 4 digits separated by a space."
   end
 
-  def self.choices
-    puts  "\nChoices:" + ' 1 '.colorize(:light_black) +
-          ' 2 '.colorize(:magenta) +
-          ' 3 '.colorize(:light_cyan) +
-          ' 4 '.colorize(:green) +
-          ' 5 '.colorize(:yellow) +
-          ' 6 '.colorize(:red)
+  # Set a color for each digit for better readability
+  def self.colorize_input(input)
+    case input
+    when 0
+      ' 0 '.colorize(:light_black)
+    when 1
+      ' 1 '.colorize(:red)
+    when 2
+      ' 2 '.colorize(:white)
+    when 3
+      ' 3 '.colorize(:magenta)
+    when 4
+      ' 4 '.colorize(:green)
+    when 5
+      ' 5 '.colorize(:yellow)
+    when 6
+      ' 6 '.colorize(:cyan)
+    end
   end
 
+  # Format result to look mor elike colored pegs
+  def self.format_feedback(input)
+    case input
+    when 0
+      ' - '.colorize(:light_black)
+    when 1
+      ' o '.colorize(:red)
+    when 2
+      ' o '.colorize(:white)
+    end
+  end
+
+  def self.choices
+    print "\nChoices: "
+  end
+
+  def self.codebreaker_guess
+    print 'Guess: '
+  end
+
+  def self.codemaker_feedback
+    print 'Feedback: '
+  end
 end
