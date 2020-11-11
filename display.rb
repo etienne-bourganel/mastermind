@@ -43,12 +43,12 @@ class Display
   # Format result to look mor elike colored pegs
   def self.format_feedback(input)
     case input
+    when 2
+      ' o '.colorize(:red)
+    when 1
+      ' o '.colorize(:white)
     when 0
       ' - '.colorize(:light_black)
-    when 1
-      ' o '.colorize(:red)
-    when 2
-      ' o '.colorize(:white)
     end
   end
 
@@ -61,6 +61,6 @@ class Display
   end
 
   def self.codemaker_feedback
-    print 'Feedback: '
+    print ':  '
   end
 end

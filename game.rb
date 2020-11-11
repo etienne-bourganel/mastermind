@@ -62,25 +62,39 @@ class Game
     @guess = input.split(' ').map(&:to_i)
   end
 
-  # Transform an array into a colorized string
+  # Format array into more readable string
   def print_colorized_array(ary)
-    colorized_str = String.new
     l = ary.length - 1
     (0..l).each do |i|
       if ary == @feedback
-        colorized_str << Display.format_feedback(ary[i])
-      else colorized_str << Display.colorize_input(ary[i])
+        print format_feedback(ary[i])
+      else print colorize_input(ary[i])
       end
     end
-    print colorized_str
+  end
+
+  # Create a new string and add formatted strings
+  def format_feedback(elmt)
+    str = String.new
+    str << Display.format_feedback(elmt)
+    str
+  end
+
+  # Create a new string and add colorized strings
+  def colorize_input(elmt)
+    str = String.new
+    str << Display.colorize_input(elmt)
+    str
   end
 
   # Return a specific peg depending on condition
-  def feedback_peg(idx)
-    if @secret_code[idx] == @guess[idx]
-      1
-    elsif @guess.include?(@secret_code[idx]) && @secret_code[idx] != @guess[idx]
+  def feedback_add_peg(temp, idx)
+    if temp[idx] == @secret_code[idx]
+      temp[idx] = nil # Remove the value corresponding to the index in temp to avoid double-counting
       2
+    elsif @secret_code.include?(temp[idx]) && @secret_code[idx] != temp[idx]
+      temp[idx] = nil
+      1
     else 0
     end
   end
@@ -88,9 +102,10 @@ class Game
   # Reset @feedback and add pegs to @feedback array
   def feedback_on_guess
     @feedback = []
-    (0..3).each do |i|
-      @feedback << feedback_peg(i)
+    temp = @guess # Create a clone of @guess to be able to modify it without altering @guess
+    (0..3).each do |idx|
+      @feedback << feedback_add_peg(temp, idx)
     end
-    @feedback
+    @feedback = @feedback.sort.reverse # Reorganize @feedback array for better readability
   end
 end
