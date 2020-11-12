@@ -61,6 +61,6 @@ class Display
   end
 
   def self.codemaker_feedback
-    print ':  '
+    print ' : '
   end
 end
