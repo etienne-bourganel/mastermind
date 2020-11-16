@@ -20,6 +20,14 @@ class Display
     puts "\nEnter your guess as a combination of 4 digits separated by a space."
   end
 
+  def self.error_wrong_input_values
+    puts 'ERROR - Enter numbers from 1 to 6 only'
+  end
+
+  def self.error_wrong_input_size
+    puts 'ERROR - Enter exactly 4 numbers'
+  end
+
   # Set a color for each digit for better readability
   def self.colorize_input(input)
     case input

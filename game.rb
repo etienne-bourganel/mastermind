@@ -37,6 +37,7 @@ class Game
   def flow
     flow_start
     while continue?
+      Display.show_round(@round)
       obtain_human_input
       Display.codebreaker_guess
       print_colorized_array(@guess)
@@ -57,9 +58,31 @@ class Game
 
   # Obtaining human input and store it in @guess
   def obtain_human_input
-    Display.show_round(@round)
     input = gets.chomp
-    @guess = input.split(' ').map(&:to_i)
+    @guess = input.split('').map(&:to_i)
+    return unless wrong_input == true
+
+    if correct_color_input?(@guess, COLORS) == false
+      Display.error_wrong_input_values
+    elsif correct_input_size?(@guess, 4) == false
+      Display.error_wrong_input_size
+    end
+    obtain_human_input
+  end
+
+  # Group conditions for inadequate input
+  def wrong_input
+    correct_input_size?(@guess, 4) == false || correct_color_input?(@guess, COLORS) == false
+  end
+
+  # Return true if an array only contains certain values
+  def correct_color_input?(input_ary, ref_ary)
+    (input_ary - ref_ary).empty?
+  end
+
+  # Return true if an array contains a certain number fo elements
+  def correct_input_size?(input_ary, ref_size)
+    input_ary.length == ref_size
   end
 
   # Format array into more readable string
