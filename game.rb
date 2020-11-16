@@ -1,7 +1,9 @@
 # frozen_string_literal: true
+require_relative 'display'
 
 # Contains flow of a game and game operations
 class Game
+  include Display
   attr_reader :secret_code, :round
   COLORS = [1, 2, 3, 4, 5, 6].freeze # The "colors" ro play with
   def initialize
@@ -37,12 +39,12 @@ class Game
   def flow
     flow_start
     while continue?
-      Display.show_round(@round)
+      show_round(@round)
       obtain_human_input
-      Display.codebreaker_guess
+      codebreaker_guess
       print_colorized_array(@guess)
       update_feedback
-      Display.codemaker_feedback
+      codemaker_feedback
       print_colorized_array(@feedback)
       add_one_round
     end
@@ -50,9 +52,9 @@ class Game
 
   # First instructions at the beginning of a game
   def flow_start
-    Display.start_game_welcome_human(@human.name)
+    start_game_welcome_human(@human.name)
     print_colorized_array(@secret_code)
-    Display.choices
+    choices
     print_colorized_array(COLORS)
   end
 
@@ -63,9 +65,9 @@ class Game
     return unless wrong_input == true
 
     if correct_color_input?(@guess, COLORS) == false
-      Display.error_wrong_input_values
+      error_wrong_input_values
     elsif correct_input_size?(@guess, 4) == false
-      Display.error_wrong_input_size
+      error_wrong_input_size
     end
     obtain_human_input
   end
@@ -99,14 +101,14 @@ class Game
   # Create a new string and add formatted strings
   def format_feedback(elmt)
     str = String.new
-    str << Display.format_feedback(elmt)
+    str << transform_integer_to_peg(elmt)
     str
   end
 
   # Create a new string and add colorized strings
   def colorize_input(elmt)
     str = String.new
-    str << Display.colorize_input(elmt)
+    str << colorize_integer_element(elmt)
     str
   end
 

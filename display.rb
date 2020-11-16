@@ -3,33 +3,29 @@
 require 'colorize'
 
 # All messages to display in english
-class Display
-  def self.set_human_name
-    puts "\nHello! What is your name?"
-  end
-
-  def self.show_round(round)
+module Display
+  def show_round(round)
     puts "\nRound #{round} of 10"
   end
 
-  def self.start_game_welcome_human(name)
+  def start_game_welcome_human(name)
     puts "\n#{name}, try to guess the secret code"
   end
 
-  def self.instructions
+  def instructions
     puts "\nEnter your guess as a combination of 4 digits separated by a space."
   end
 
-  def self.error_wrong_input_values
+  def error_wrong_input_values
     puts 'ERROR - Enter numbers from 1 to 6 only'
   end
 
-  def self.error_wrong_input_size
+  def error_wrong_input_size
     puts 'ERROR - Enter exactly 4 numbers'
   end
 
   # Set a color for each digit for better readability
-  def self.colorize_input(input)
+  def colorize_integer_element(input)
     case input
     when 0
       ' 0 '.colorize(:light_black)
@@ -49,7 +45,7 @@ class Display
   end
 
   # Format result to look mor elike colored pegs
-  def self.format_feedback(input)
+  def transform_integer_to_peg(input)
     case input
     when 2
       ' o '.colorize(:red)
@@ -60,15 +56,15 @@ class Display
     end
   end
 
-  def self.choices
+  def choices
     print "\nChoices: "
   end
 
-  def self.codebreaker_guess
+  def codebreaker_guess
     print 'Guess: '
   end
 
-  def self.codemaker_feedback
+  def codemaker_feedback
     print ' : '
   end
 end

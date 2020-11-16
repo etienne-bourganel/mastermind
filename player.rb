@@ -19,7 +19,7 @@ class Human < Player
   end
 
   def set_human_name
-    Display.set_human_name
+    puts "\nHello! What is your name?"
     gets.chomp.to_s
   end
 end
