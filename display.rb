@@ -13,7 +13,17 @@ module Display
   end
 
   def instructions
-    puts "\nEnter your guess as a combination of 4 digits separated by a space."
+    puts "\nEnter your guess as a combination of 4 digits from 1 to 6, no space betwwen."
+  end
+
+  def display_codemaker_wins(secret_code)
+    print "\nThe codemaker wins! The correct code was: "
+    print_colorized_array(secret_code)
+  end
+
+  def display_codebreaker_wins(secret_code)
+    print "\nThe codebreaker wins! The correct code was: "
+    print_colorized_array(secret_code)
   end
 
   def error_wrong_input_values
@@ -22,6 +32,31 @@ module Display
 
   def error_wrong_input_size
     puts 'ERROR - Enter exactly 4 numbers'
+  end
+
+  # Display array into more readable string
+  def print_colorized_array(ary)
+    l = ary.length - 1
+    (0..l).each do |i|
+      if ary == @feedback
+        print format_feedback(ary[i])
+      else print colorize_input(ary[i])
+      end
+    end
+  end
+
+  # Create a new string and add formatted strings
+  def format_feedback(elmt)
+    str = String.new
+    str << transform_integer_to_peg(elmt)
+    str
+  end
+
+  # Create a new string and add colorized strings
+  def colorize_input(elmt)
+    str = String.new
+    str << colorize_integer_element(elmt)
+    str
   end
 
   # Set a color for each digit for better readability

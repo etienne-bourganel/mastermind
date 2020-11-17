@@ -1,10 +1,14 @@
 # frozen_string_literal: true
+
 require_relative 'display'
+require_relative 'analyze'
+require 'pry'
 
 # Contains flow of a game and game operations
 class Game
   include Display
-  attr_reader :secret_code, :round
+  include Analyze
+  attr_reader :secret_code, :round, :guess
   COLORS = [1, 2, 3, 4, 5, 6].freeze # The "colors" ro play with
   def initialize
     create_players
@@ -12,6 +16,7 @@ class Game
     @guess = []
     @feedback = []
     @round = 1
+    @winner = ''
   end
 
   # Create both players
@@ -27,7 +32,26 @@ class Game
 
   # Condition to keep the codebreaker to continue guessing
   def continue?
-    @round <= 10
+    @round <= 10 && codebreaker_wins? == false
+  end
+
+  # Boolean to check if codebreaker guessed right
+  def codebreaker_wins?
+    return false unless @guess == @secret_code
+
+    true
+  end
+
+  # What to do if the codebreaker wins
+  def manage_codebreaker_winning_guess
+    @winner = 'codebreaker'
+    display_codebreaker_wins(@secret_code)
+  end
+
+  # What to do when the codemaker wins
+  def manage_codemaker_wins
+    @winner = 'codemaker'
+    display_code_maker_wins(@secret_code)
   end
 
   # Round counter
@@ -35,30 +59,38 @@ class Game
     @round += 1
   end
 
-  # Flow for a game until one player wins
-  def flow
-    flow_start
+  # Flow for one game
+  def game_flow
+    round_start
     while continue?
-      show_round(@round)
-      obtain_human_input
-      codebreaker_guess
-      print_colorized_array(@guess)
-      update_feedback
-      codemaker_feedback
-      print_colorized_array(@feedback)
+      one_round
       add_one_round
+    end
+    if codebreaker_wins?
+      manage_codebreaker_winning_guess
+    else manage_codemaker_wins
     end
   end
 
+  # Flow for a game until one player wins
+  def one_round
+    show_round(@round)
+    obtain_human_input
+    codebreaker_guess
+    print_colorized_array(@guess)
+    update_feedback
+    codemaker_feedback
+    print_colorized_array(@feedback)
+  end
+
   # First instructions at the beginning of a game
-  def flow_start
+  def round_start
     start_game_welcome_human(@human.name)
-    print_colorized_array(@secret_code)
     choices
     print_colorized_array(COLORS)
   end
 
-  # Obtaining human input and store it in @guess
+  # Obtaining human input and store it in @guess if valid
   def obtain_human_input
     input = gets.chomp
     @guess = input.split('').map(&:to_i)
@@ -87,55 +119,30 @@ class Game
     input_ary.length == ref_size
   end
 
-  # Format array into more readable string
-  def print_colorized_array(ary)
-    l = ary.length - 1
-    (0..l).each do |i|
-      if ary == @feedback
-        print format_feedback(ary[i])
-      else print colorize_input(ary[i])
-      end
-    end
-  end
-
-  # Create a new string and add formatted strings
-  def format_feedback(elmt)
-    str = String.new
-    str << transform_integer_to_peg(elmt)
-    str
-  end
-
-  # Create a new string and add colorized strings
-  def colorize_input(elmt)
-    str = String.new
-    str << colorize_integer_element(elmt)
-    str
-  end
-
   # Update @feedback based on @guess
   def update_feedback
     @feedback = [] # Reset @feedback each time
-    Analyze.count_correct_colors(@secret_code, @guess)
-    Analyze.count_correct_positions(@guess, @secret_code)
+    count_correct_colors(@secret_code, @guess)
+    count_correct_positions(@guess, @secret_code)
     add_pegs_and_spaces
     @feedback = @feedback.sort.reverse # Reorganize @feedback array for better readability
   end
 
   # Add red pegs (value = 2) to @feedback
   def add_red_pegs
-    x = Analyze.count_correct_positions(@guess, @secret_code)
+    x = count_correct_positions(@guess, @secret_code)
     x.times { @feedback << 2 }
   end
 
   # Add white pegs (value = 1) to @feedback
   def add_white_pegs
-    x = Analyze.count_correct_colors(@secret_code, @guess) - Analyze.count_correct_positions(@guess, @secret_code)
+    x = count_correct_colors(@secret_code, @guess) - count_correct_positions(@guess, @secret_code)
     x.times { @feedback << 1 }
   end
 
   # Add blank spaces (value = 0) to @feedback to have an array with 4 elements in total
   def add_blank_spaces
-    x = 4 - Analyze.count_correct_colors(@secret_code, @guess)
+    x = 4 - count_correct_colors(@secret_code, @guess)
     x.times { @feedback << 0 }
   end
 
