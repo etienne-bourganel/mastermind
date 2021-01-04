@@ -19,11 +19,18 @@ module Display
   def display_codemaker_wins(secret_code)
     print "\nThe codemaker wins! The correct code was: "
     print_colorized_array(secret_code)
+    print "\n"
   end
 
   def display_codebreaker_wins(secret_code)
     print "\nThe codebreaker wins! The correct code was: "
     print_colorized_array(secret_code)
+  end
+
+  def display_winner_and_secret_code(winner, secret_code)
+    print "\nThe #{winner} wins! The correct code was: "
+    print_colorized_array(secret_code)
+    print "\n"
   end
 
   def error_wrong_input_values
@@ -32,6 +39,10 @@ module Display
 
   def error_wrong_input_size
     puts 'ERROR - Enter exactly 4 numbers'
+  end
+
+  def display_player_score(player)
+    puts "\n#{player.name}'s score is #{player.score} as a #{player.role}."
   end
 
   # Display array into more readable string

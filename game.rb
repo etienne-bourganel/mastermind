@@ -9,7 +9,7 @@ class Game
   include Display
   include Analyze
   attr_reader :secret_code, :round, :guess
-  COLORS = [1, 2, 3, 4, 5, 6].freeze # The "colors" ro play with
+  COLORS = [1, 2, 3, 4, 5, 6].freeze # The "colors" to play with
   def initialize
     create_players
     @secret_code = define_secret_code
@@ -45,13 +45,18 @@ class Game
   # What to do if the codebreaker wins
   def manage_codebreaker_winning_guess
     @winner = 'codebreaker'
-    display_codebreaker_wins(@secret_code)
   end
 
   # What to do when the codemaker wins
   def manage_codemaker_wins
     @winner = 'codemaker'
-    display_code_maker_wins(@secret_code)
+  end
+
+  # show winner and scores
+  def show_winner_and_scores
+    display_winner_and_secret_code(@winner, @secret_code)
+    display_player_score(@human)
+    display_player_score(@machine)
   end
 
   # Round counter
@@ -67,9 +72,10 @@ class Game
       add_one_round
     end
     if codebreaker_wins?
-      manage_codebreaker_winning_guess
-    else manage_codemaker_wins
+      manage_codemaker_wins
+    else manage_codebreaker_winning_guess
     end
+    show_winner_and_scores
   end
 
   # Flow for a game until one player wins
@@ -146,7 +152,7 @@ class Game
     x.times { @feedback << 0 }
   end
 
-  # Gather functions for better readability
+  # Group functions for better readability
   def add_pegs_and_spaces
     add_red_pegs
     add_white_pegs
