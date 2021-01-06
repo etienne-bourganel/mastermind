@@ -2,7 +2,8 @@
 
 # This is the class for all players
 class Player
-  attr_reader :score, :role, :name
+  attr_reader :role, :name
+  attr_accessor :score
 
   def initialize(role)
     @role = role
@@ -12,14 +13,9 @@ end
 
 # For human player
 class Human < Player
-  def initialize(role)
+  def initialize(role, name = 'Human player')
     super(role)
-    @name = set_human_name
-  end
-
-  def set_human_name
-    puts "\nHello! What is your name?"
-    gets.chomp.to_s
+    @name = name
   end
 end
 

@@ -11,18 +11,37 @@ class Game
   attr_reader :secret_code, :round, :guess
   COLORS = [1, 2, 3, 4, 5, 6].freeze # The "colors" to play with
   def initialize
-    create_players
-    @secret_code = define_secret_code
-    @guess = []
-    @feedback = []
-    @round = 1
-    @winner = ''
+    make_role_choice
+  end
+
+  # Prompt human player for name and tole, then triggers players creations
+  def make_role_choice
+    puts 'Hello, what is your name?'
+    human_name = gets.chomp.to_s
+    puts "#{human_name} Please, enter 1 to play as the codebreaker or 2 to play as the codemaker."
+    choice = gets.chomp.to_i
+    if choice == (1 || 2)
+      create_players(choice, human_name)
+    else make_role_choice
+    end
+  end
+
+  # Start the game flow corresponding to the chosen roles
+  def start_correct_game_flow
+    return unless @human.role == 'codebreaker'
+
+    start_game_flow_human_codebreaker
   end
 
   # Create both players
-  def create_players
-    @human = Human.new('codebreaker')
-    @machine = Machine.new('codemaker')
+  def create_players(choice, human_name)
+    if choice == 1
+      @human = Human.new('codebreaker', human_name)
+      @machine = Machine.new('codemaker')
+    else
+      @human = Human.new('codemaker', human_name)
+      @machine = Machine.new('codebreaker')
+    end
   end
 
   # Create the secret code based on available colors
@@ -45,11 +64,19 @@ class Game
   # What to do if the codebreaker wins
   def manage_codebreaker_winning_guess
     @winner = 'codebreaker'
+    if @human.role.to_s == 'codebreaker'
+      @human.score += 1
+    else @machine.score += 1
+    end
   end
 
   # What to do when the codemaker wins
   def manage_codemaker_wins
     @winner = 'codemaker'
+    if @machine.role.to_s == 'codemaker'
+      @machine.score += 1
+    else @human.score += 1
+    end
   end
 
   # show winner and scores
@@ -64,18 +91,33 @@ class Game
     @round += 1
   end
 
-  # Flow for one game
-  def game_flow
+  # Flow for one game with the human player as the codebreaker
+  def start_game_flow_human_codebreaker
     round_start
     while continue?
       one_round
       add_one_round
     end
     if codebreaker_wins?
-      manage_codemaker_wins
-    else manage_codebreaker_winning_guess
+      manage_codebreaker_winning_guess
+    else manage_codemaker_wins
     end
     show_winner_and_scores
+    new_round?
+  end
+
+  # Ask player for a new round
+  def new_round?
+    puts 'Want to play another round? Press Y for yes or N for no'
+    input = gets.chomp.to_s
+    if input == 'y'
+      sleep 1
+      start_correct_game_flow
+    elsif input == 'n'
+      puts 'Ok, thanks for playing!'
+      sleep 1
+    else new_round?
+    end
   end
 
   # Flow for a game until one player wins
@@ -89,8 +131,13 @@ class Game
     print_colorized_array(@feedback)
   end
 
-  # First instructions at the beginning of a game
+  # First instructions at the beginning of a game and reset of secret code and round number
   def round_start
+    @secret_code = define_secret_code
+    @guess = []
+    @feedback = []
+    @round = 1
+    @winner = ''
     start_game_welcome_human(@human.name)
     choices
     print_colorized_array(COLORS)

@@ -7,4 +7,4 @@ require_relative 'game'
 require_relative 'player'
 
 game = Game.new
-game.game_flow
+game.start_correct_game_flow

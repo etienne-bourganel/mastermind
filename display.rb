@@ -16,17 +16,6 @@ module Display
     puts "\nEnter your guess as a combination of 4 digits from 1 to 6, no space betwwen."
   end
 
-  def display_codemaker_wins(secret_code)
-    print "\nThe codemaker wins! The correct code was: "
-    print_colorized_array(secret_code)
-    print "\n"
-  end
-
-  def display_codebreaker_wins(secret_code)
-    print "\nThe codebreaker wins! The correct code was: "
-    print_colorized_array(secret_code)
-  end
-
   def display_winner_and_secret_code(winner, secret_code)
     print "\nThe #{winner} wins! The correct code was: "
     print_colorized_array(secret_code)
@@ -42,7 +31,8 @@ module Display
   end
 
   def display_player_score(player)
-    puts "\n#{player.name}'s score is #{player.score} as a #{player.role}."
+    # puts "\n#{player.name}'s score is #{player.score} as a #{player.role}."
+    puts "\n#{player.name}/#{player.role}'s score: #{player.score}."
   end
 
   # Display array into more readable string
